@@ -6,11 +6,11 @@ import { DECISION_SCHEMA, decisionInput } from './prompts.mjs';
 
 const TIMEOUT_MS = 20_000;
 
-export async function decide({ apiKey, facts, calendar, transcript, utterance, lastSpoken }) {
+export async function decide({ apiKey, facts, calendar, transcript, utterance, lastSpoken, previousThinking, questionsAsked = 0 }) {
   const client = new OpenAI({ apiKey, maxRetries: 0, timeout: TIMEOUT_MS });
   const response = await client.responses.create({
     model: config.agentModel,
-    input: decisionInput({ facts, calendar, transcript, utterance, lastSpoken }),
+    input: decisionInput({ facts, calendar, transcript, utterance, lastSpoken, previousThinking, questionsAsked }),
     reasoning: { effort: 'low' },
     text: {
       format: { type: 'json_schema', name: 'schedule_decision', strict: true, schema: DECISION_SCHEMA },

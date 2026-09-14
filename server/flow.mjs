@@ -6,7 +6,11 @@ import * as store from './store.mjs';
 import { decide } from './agent.mjs';
 import { factsBlock } from './prompts.mjs';
 
-export const newState = () => ({ lastRaw: '', lastThinking: '', lastSpoken: '', pending: null, lastAdded: null });
+export const newState = () => ({ lastRaw: '', lastThinking: '', lastSpoken: '', pending: null, lastAdded: null, questions: 0 });
+
+/** 1 件の予定につき追加の質問はここまで（聞きすぎ防止）。 */
+export const MAX_QUESTIONS = 2;
+const isQuestion = (t) => /[?？]\s*$/.test(t) && !/よろしい|いいですか|でいいです/.test(t);
 
 export async function gatherFacts(state) {
   const today = tokyoDate();
@@ -53,6 +57,8 @@ export async function handleDelegation(session, delegationId, log) {
       transcript,
       utterance,
       lastSpoken: state.lastSpoken,
+      previousThinking: state.lastThinking,
+      questionsAsked: state.questions,
     });
   } catch (e) {
     log.error('decision failed', String(e));
@@ -85,6 +91,9 @@ export async function handleDelegation(session, delegationId, log) {
     decision.speak = 'すみません、ダッシュボードに書き込めませんでした。少し経ってからもう一度お願いします。';
     decision.pending_event = decision.add_event ?? decision.pending_event;
   }
+  // 追加の質問の回数: 予定を聞いている途中（pending あり・登録なし）で質問文を返したら +1。予定が確定・消滅したら 0 に戻す
+  if (decision.pending_event && !decision.add_event && isQuestion(decision.speak)) state.questions += 1;
+  if (!decision.pending_event) state.questions = 0;
   state.pending = decision.pending_event ?? null;
   state.lastThinking = [decision.thinking, ...notes].filter(Boolean).join('\n');
   if (decision.speak) state.lastSpoken = decision.speak;
