@@ -1,0 +1,19 @@
+{
+  "outputDir": "web/assets",
+  "images": [
+    {
+      "id": "assistant-avatar",
+      "file": "assistant-avatar.png",
+      "size": "1024x1024",
+      "transparent": false,
+      "prompt": "Bust-up portrait of a warm, approachable Japanese woman in her late 20s, an AI scheduling assistant at a small family-run electrical company. She wears the company's neat office uniform: a light beige business jacket over a white top with a small blue-and-white patterned scarf at the neck (same style as a Japanese corporate receptionist uniform), short dark bob hair, gentle genuine smile looking at the viewer as if chatting with a familiar colleague. Setting is homely rather than a formal lobby: soft natural window light, warm cream-to-peach gradient background with a hint of a wooden shelf and a small green plant softly blurred behind. Photorealistic, clean, gentle. Subject slightly left of center with breathing room on the right. Fictional person, not a real individual."
+    },
+    {
+      "id": "app-icon",
+      "file": "icon-source.png",
+      "size": "1024x1024",
+      "transparent": false,
+      "prompt": "A polished Android app icon for a small company's scheduling assistant used by the chairman. Flat, modern, friendly illustration: a warm cream (#F7F1E8) rounded-square background filling the entire canvas edge to edge (no border, no outer margin, no drop shadow), and centered a simple moss-green (#6E7F4F) calendar page with a soft apricot (#F2C9A8) speech-bubble tucked at its lower right corner, plus a tiny rounded lunch-box (bento) silhouette in muted brown at the lower left. Keep every important shape inside the central 70% of the canvas so it survives circular masking. Smooth vector look, subtle 2-tone shading only, no text, no letters, no gradients heavier than a soft highlight, no photo, no people."
+    }
+  ]
+}

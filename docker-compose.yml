@@ -1,0 +1,24 @@
+# 会長のスケジュール係（GPT-Live）。VPS の /opt/sakuden-schedulemate/ で docker compose up -d --build
+# 所在ダッシュボードと同じ Docker ネットワークに入り、sd-api:8000 へ書き込む。
+# 公開は Tailscale の IP だけ: http://sakurai-vps.tail12e9fa.ts.net:8090/
+name: sakuden-schedulemate
+services:
+  api:
+    build: .
+    image: sakuden-schedulemate:latest
+    container_name: ssm-api
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data
+      - ./secrets/openai_api_key:/run/secrets/openai_api_key:ro
+    ports:
+      - "127.0.0.1:8090:8080"
+      - "100.83.33.18:8090:8080"
+    networks:
+      - default
+      - sd
+networks:
+  sd:
+    external: true
+    name: sakurai-dashboard-internal

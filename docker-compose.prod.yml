@@ -1,0 +1,45 @@
+# 本番（公開 URL）: Cloudflare Tunnel 経由で https://schedule.sakuraidenso.net に出す。
+#   docker compose -f docker-compose.prod.yml --env-file .env up -d --build
+# ホストのポートは開けない（ssm-cloudflared だけが ssm-api に届く）。
+# 所在ダッシュボードの Docker ネットワーク sakurai-dashboard-internal に参加し sd-api:8000 へ書き込む。
+name: sakuden-schedulemate
+services:
+  api:
+    build: .
+    image: sakuden-schedulemate:latest
+    container_name: ssm-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ACCESS_KEYS: ${APP_ACCESS_KEYS:?APP_ACCESS_KEYS is required}
+    volumes:
+      - ./data:/data
+      - ./secrets/openai_api_key:/run/secrets/openai_api_key:ro
+    expose:
+      - "8080"
+    networks:
+      - default
+      - sd
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  cloudflared:
+    image: cloudflare/cloudflared:2025.2.1
+    container_name: ssm-cloudflared
+    restart: unless-stopped
+    depends_on:
+      - api
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?TUNNEL_TOKEN is required}
+    networks:
+      - default
+
+networks:
+  sd:
+    external: true
+    name: sakurai-dashboard-internal

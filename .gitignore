@@ -1,0 +1,7 @@
+node_modules/
+secrets/
+data/
+mock/assets/*-v1-*.png
+.omc/
+*.log
+.env

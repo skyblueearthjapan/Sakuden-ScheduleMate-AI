@@ -1,0 +1,16 @@
+{
+  "name": "sakuden-schedulemate-ai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "会長のスケジュール係 — GPT-Live で会話し、所在ダッシュボードの予定とお弁当の要否を記録する",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server/index.mjs",
+    "dev": "node --watch server/index.mjs"
+  },
+  "dependencies": {
+    "openai": "7.15.0",
+    "ws": "^8.18.0"
+  }
+}
