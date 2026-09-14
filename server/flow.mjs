@@ -88,6 +88,11 @@ export async function handleDelegation(session, delegationId, log) {
       notes.push(`削除済み: ${decision.delete_event_id}`);
       log.info('event deleted', decision.delete_event_id);
     }
+    if (decision.clear_lunch_date) {
+      store.clearLunch(decision.clear_lunch_date);
+      notes.push(`お弁当 ${decision.clear_lunch_date}: 未回答に戻した`);
+      log.info('lunch cleared', decision.clear_lunch_date);
+    }
     if (decision.set_lunch) {
       store.setLunch(decision.set_lunch.date, decision.set_lunch.needed);
       notes.push(`お弁当 ${decision.set_lunch.date}: ${decision.set_lunch.needed ? 'いる' : 'いらない'}`);

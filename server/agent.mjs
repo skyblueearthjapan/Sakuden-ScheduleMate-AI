@@ -24,5 +24,6 @@ export async function decide({ apiKey, facts, calendar, transcript, utterance, l
     add_event: parsed.add_event ?? null,
     delete_event_id: parsed.delete_event_id ?? null,
     set_lunch: parsed.set_lunch ?? null,
+    clear_lunch_date: parsed.clear_lunch_date ?? null,
   };
 }

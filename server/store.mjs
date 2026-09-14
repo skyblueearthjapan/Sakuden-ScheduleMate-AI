@@ -33,6 +33,15 @@ export function setLunch(date, needed, note = '') {
   return state.lunch[date];
 }
 
+/** お弁当の回答を消して「未回答」に戻す。 */
+export function clearLunch(date) {
+  const state = load();
+  const existed = date in state.lunch;
+  delete state.lunch[date];
+  save(state);
+  return existed;
+}
+
 /** 音声の利用秒数（日ごと）。予算の判定に使う。 */
 export function usageSecondsOn(date) {
   return load().usage[date] ?? 0;

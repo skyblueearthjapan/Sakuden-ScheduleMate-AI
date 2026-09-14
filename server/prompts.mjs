@@ -94,7 +94,7 @@ export function liveInstructions({ chairmanName, facts }) {
 export const DECISION_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['speak', 'thinking', 'pending_event', 'add_event', 'delete_event_id', 'set_lunch'],
+  required: ['speak', 'thinking', 'pending_event', 'add_event', 'delete_event_id', 'set_lunch', 'clear_lunch_date'],
   properties: {
     speak: { type: 'string', description: '会長へ話す内容。日本語で 1〜2 文。話し言葉。' },
     thinking: { type: 'string', description: 'Live 側の状態メモ（発話されない）。いま何を聞いているか、確認中の予定、直前の登録内容を 1〜3 行で。' },
@@ -107,6 +107,7 @@ export const DECISION_SCHEMA = {
       anyOf: [{ type: 'null' }, { $ref: '#/$defs/event' }],
     },
     delete_event_id: { type: ['string', 'null'], description: '取り消す予定の id（事実欄の id）。無ければ null。' },
+    clear_lunch_date: { type: ['string', 'null'], description: 'お弁当の回答を消して「未回答」に戻す日付（YYYY-MM-DD）。会長が「未回答に戻して」「お弁当の回答は消して」「なしにしたのを取り消して」と言ったときだけ。それ以外は null。' },
     set_lunch: {
       description: 'お弁当の要否が決まったときだけ。日付と要否。',
       anyOf: [
@@ -159,7 +160,10 @@ export function decisionInput({ facts, calendar, transcript, utterance, lastSpok
     '- お弁当の返事は幅広く読む。いる: 「いる」「いります」「お願いします」「お願い」「頼む」「頼みます」「用意して」「取って」「食べる」「あり」「もらう」。いらない: 「いらない」「いらん」「不要」「なし」「無し」「結構」「大丈夫」「外で食べる」「持ってくる」「弁当は持参」。',
     '- 直前にお弁当を尋ねていて会長が「はい」「うん」「そう」とだけ言ったら: 「なしでよろしいですか」と聞いた回は needed:false、「どうされますか」と聞いた回は needed:true（お願いの意味）。「いるかいらないかで答えて」とは言わない。',
     '- 会長が「今日はいらない」「明日はいる」のように日を言ったら、その日の set_lunch を出す（予定の登録とは無関係に受ける）。',
-    '- 予定を取り消したいと言われたら、事実欄の id を delete_event_id に入れ、speak で「○○を取り消しました」。該当が複数なら聞き返す。',
+    '- 予定を取り消したいと言われたら、事実欄の id を delete_event_id に入れ、speak で「○○を取り消しました」。該当が複数なら聞き返す。予定を取り消してもお弁当の回答はそのまま（変えたければ会長が言う）。',
+    '- 登録済みの予定の変更（時刻を足す・変える、お客様名や案件の訂正、日付の変更）は、変更後の内容を pending_event に入れて「○○に変えますね。よろしいですか」と確認し、肯定されたら delete_event_id（元の id）と add_event（変更後）を同じ回に出す。',
+    '- お弁当の回答は何度でも変えられる。「やっぱりいる」「いらないに変えて」と言われたら set_lunch を出す。',
+    '- 「お弁当を未回答に戻して」「お弁当の回答は消して」「さっきのお弁当なしは取り消し」と言われたら clear_lunch_date にその日付を入れ、speak で「○日のお弁当は未回答に戻しました」。事務の方には未回答として見える。',
     '- 予定の確認（「今週は？」「来月は？」「先月は何があった？」「16日は？」）を求められたら、事実欄の該当する予定を日付順に読み上げる。件数が多ければ「来月は工事が 4 件、訪問が 2 件」のようにまとめてから主なものを言う。無ければ「入っていません」。この回は登録しない（add_event/pending_event は null）。',
     '- 予定の読み上げは 4 文までよい。日付は「9月21日から23日」「来週の月曜」のように話し言葉で言う。',
     '- 事実欄に無い予定・お客様名・日付を作らない。',
