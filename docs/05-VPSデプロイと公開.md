@@ -10,7 +10,8 @@
 | 配置先 | `/opt/sakuden-schedulemate/`（`docker-compose.yml`, `Dockerfile`, `server/`, `web/`, `.env`, `secrets/openai_api_key`, `data/state.json`） |
 | コンテナ | `ssm-api`（node:24-alpine、1 プロセス。UI 配信 + API） |
 | ネットワーク | `sakurai-dashboard-internal` に参加し `http://sd-api:8000/api` へ書き込む |
-| 公開（暫定） | Tailscale の IP だけ: **http://sakurai-vps.tail12e9fa.ts.net:8090/**（= 100.83.33.18:8090） |
+| 公開 | **https://schedule.sakuraidenso.net**（Cloudflare Tunnel `sakuden-schedulemate`、2026-09-14 公開済み。配布リンクは `#k=<キー>` 付き） |
+| Tailscale 版 | 停止済み（`docker-compose.yml` は検証用に残す） |
 
 ## 重要: マイクは HTTPS が必要
 
