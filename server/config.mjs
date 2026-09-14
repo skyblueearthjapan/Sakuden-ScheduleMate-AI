@@ -16,6 +16,8 @@ export const config = {
 
   // 所在ダッシュボード（正本）。本番は同じ Docker ネットワークの sd-api。
   dashboardApiBase: env('DASHBOARD_API_BASE', 'http://127.0.0.1:8000/api'),
+  // ダッシュボードもアクセスキー方式（X-App-Key）。ダッシュボード側 APP_ACCESS_KEYS のうち 1 本をここに置く
+  dashboardApiKey: env('DASHBOARD_API_KEY', ''),
   chairmanStaffId: env('CHAIRMAN_STAFF_ID', 'S006'),
   chairmanName: env('CHAIRMAN_NAME', '会長'),
 

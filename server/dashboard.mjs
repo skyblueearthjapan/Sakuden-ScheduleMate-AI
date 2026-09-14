@@ -7,7 +7,10 @@ const TIMEOUT_MS = 8000;
 async function call(method, path, body) {
   const res = await fetch(`${config.dashboardApiBase}${path}`, {
     method,
-    headers: body === undefined ? {} : { 'content-type': 'application/json' },
+    headers: {
+      ...(config.dashboardApiKey ? { 'x-app-key': config.dashboardApiKey } : {}),
+      ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });

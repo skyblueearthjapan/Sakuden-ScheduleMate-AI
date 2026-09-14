@@ -15,14 +15,21 @@ const isQuestion = (t) => /[?？]\s*$/.test(t) && !/よろしい|いいですか
 export async function gatherFacts(state) {
   const today = tokyoDate();
   // 先月の振り返りと来月の確認に答えられるよう、先月〜3 か月先を渡す
-  const events = await dashboard.upcomingEvents(addDays(today, -45), addDays(today, 95));
+  let events = [];
+  let dashboardError = null;
+  try {
+    events = await dashboard.upcomingEvents(addDays(today, -45), addDays(today, 95));
+  } catch (e) {
+    dashboardError = String(e.message ?? e);
+  }
   const lunch = store.lunchFor(addDays(today, -1), addDays(today, 14));
   const names = await dashboard.knownNames().catch(() => []);
   return {
     today,
     events,
     lunch,
-    text: factsBlock({ today, now: tokyoTime(), events, lunch, pending: state?.pending ?? null, lastAdded: state?.lastAdded ?? null, names }),
+    dashboardError,
+    text: factsBlock({ today, now: tokyoTime(), events, lunch, pending: state?.pending ?? null, lastAdded: state?.lastAdded ?? null, names, dashboardError }),
   };
 }
 

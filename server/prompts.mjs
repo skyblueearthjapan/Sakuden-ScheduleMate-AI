@@ -5,10 +5,15 @@ import { label } from './dates.mjs';
 const kindLabel = (k) => k;
 
 /** 事実欄（Live の初期指示と、判断モデルの入力の両方で使う） */
-export function factsBlock({ today, now, events, lunch, pending, lastAdded, names = [] }) {
+export function factsBlock({ today, now, events, lunch, pending, lastAdded, names = [], dashboardError = null }) {
   const lines = [];
   lines.push(`今日: ${today}（${label(today)}） 現在時刻: ${now}`);
   lines.push('');
+  if (dashboardError) {
+    lines.push('## 注意: 所在ダッシュボードに接続できていない');
+    lines.push('予定の読み書きができない。予定を言われたら「いまダッシュボードにつながらないので、あとでもう一度お願いします」と伝える。お弁当の回答は受けてよい。');
+    lines.push('');
+  }
   lines.push('## 会長の予定（所在ダッシュボードより。先月〜3 か月先。過去の予定は [済]。id は削除に使う）');
   if (events.length === 0) lines.push('（この期間の予定は入っていない）');
   for (const e of events) {
