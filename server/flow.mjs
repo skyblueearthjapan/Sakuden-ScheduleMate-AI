@@ -10,7 +10,8 @@ export const newState = () => ({ lastRaw: '', lastThinking: '', lastSpoken: '', 
 
 export async function gatherFacts(state) {
   const today = tokyoDate();
-  const events = await dashboard.upcomingEvents(today, addDays(today, 21));
+  // 先月の振り返りと来月の確認に答えられるよう、先月〜3 か月先を渡す
+  const events = await dashboard.upcomingEvents(addDays(today, -45), addDays(today, 95));
   const lunch = store.lunchFor(addDays(today, -1), addDays(today, 14));
   const names = await dashboard.knownNames().catch(() => []);
   return {
